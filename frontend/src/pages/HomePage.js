@@ -93,10 +93,13 @@ export default function HomePage() {
                           ref={provided.innerRef}
                           draggableProps={provided.draggableProps}
                           dragHandleProps={provided.dragHandleProps}
-                          title={habit.title}
+                          id={habit.id}
+                          title={habit.name}
                           description={habit.description}
                           streak={habit.last10Days || []}
                           trackedToday={habit.trackedToday}
+                          currentStreak={habit.currentStreak}
+                          longestStreak={habit.longestStreak}
                           onTrack={async () => {
                             await fetch(`http://localhost:8080/api/habits/${habit.id}/track`, {
                               method: 'POST',
@@ -105,6 +108,17 @@ export default function HomePage() {
                             fetchHabits();
                           }}
                           onViewDetails={() => navigate(`/habit/${habit.id}`)}
+                          onDelete={async (habitId) => {
+                            try {
+                              await fetch(`http://localhost:8080/api/habits/${habitId}`, {
+                                method: 'DELETE',
+                                headers: { 'Authorization': `Bearer ${token}` }
+                              });
+                              fetchHabits();
+                            } catch (err) {
+                              setError('Failed to delete habit');
+                            }
+                          }}
                           index={index}
                           style={{
                             ...provided.draggableProps.style,

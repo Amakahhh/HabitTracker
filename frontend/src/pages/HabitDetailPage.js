@@ -36,6 +36,7 @@ const Days = styled.div`
   display: flex;
   gap: 0.5rem;
   margin: 1.5rem 0;
+  flex-wrap: wrap;
 `;
 const Day = styled.div`
   width: 32px;
@@ -48,6 +49,27 @@ const Day = styled.div`
   justify-content: center;
   font-weight: bold;
   font-size: 1rem;
+`;
+const StreakStats = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 10px;
+`;
+const StatItem = styled.div`
+  text-align: center;
+`;
+const StatValue = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #42b8e0;
+`;
+const StatLabel = styled.div`
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.2rem;
 `;
 const BtnRow = styled.div`
   display: flex;
@@ -116,7 +138,7 @@ export default function HabitDetailPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`http://localhost:8080/habits/${id}`, {
+      const res = await fetch(`http://localhost:8080/api/habits/${id}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Failed to fetch habit');
@@ -212,6 +234,16 @@ export default function HabitDetailPage() {
           <Day key={i} done={done}>{10 - i}</Day>
         ))}
       </Days>
+              <StreakStats>
+          <StatItem>
+            <StatValue>{habit.currentStreak || 0}</StatValue>
+            <StatLabel>Current Streak</StatLabel>
+          </StatItem>
+          <StatItem>
+            <StatValue>{habit.longestStreak || 0}</StatValue>
+            <StatLabel>Longest Streak</StatLabel>
+          </StatItem>
+        </StreakStats>
       <BtnRow>
         <TrackBtn onClick={handleTrack} disabled={habit.trackedToday || tracking}>
           {habit.trackedToday ? 'Tracked Today' : tracking ? 'Tracking...' : 'Track Today'}
